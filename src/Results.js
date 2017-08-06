@@ -23,7 +23,7 @@ export default class Results extends Component {
     if (params.city == "Orange Cove") {
       display = <Text style={styles.results}>Lol no one wants to go to Orange Cove</Text>
     } else {
-      var results = [];
+      let results = [];
       for(var i=0; i<100;i++){
         results.push("Hella Results");
       }
