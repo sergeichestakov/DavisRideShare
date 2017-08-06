@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { Text, View, StyleSheet, StatusBar, ScrollView } from 'react-native';
-import Header from './header.js';
 
 export default class Results extends Component {
 

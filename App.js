@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component, PureComponent } from 'react';
 import { Alert, StyleSheet, Dimensions, Text, View, ScrollView, TouchableOpacity, DatePickerAndroid } from 'react-native';
 import { TabViewAnimated, TabBar, SceneMap } from 'react-native-tab-view';
 import { RaisedTextButton } from 'react-native-material-buttons';
 import { StackNavigator } from 'react-navigation';
 import TextField from 'react-native-md-textinput';
-import Results from './results.js';
-import Header from './header.js';
+import Results from './Results.js';
+import Header from './Header.js';
 
-class DavisScene extends Component {
+class DavisScene extends PureComponent {
 
   state = {
     daySelected: "",
@@ -20,13 +20,12 @@ class DavisScene extends Component {
       const {action, year, month, day} = await DatePickerAndroid.open({
         date: today,
         minDate: today,
-        maxDate: new Date(+new Date + 6.048e+8)
+        maxDate: new Date(+new Date + 6.048e+8) //1 week
       });
       if (action !== DatePickerAndroid.dismissedAction) {
           // Selected year, month (0-11), day
           let selected = new Date(year, month, day);
-          this.setState({daySelected: selected.toDateString()});
-          alert(this.state.daySelected);
+          this.setState({daySelected: selected.toDateString(), search: ''});
       }
     } catch ({code, message}) {
       console.warn('Cannot open date picker', message);
@@ -34,10 +33,17 @@ class DavisScene extends Component {
   }
 
   handleSearch = (text) => {
-     this.setState({ search: text })
+    this.setState({ search: text, daySelected: '' })
   }
 
   render(){
+    let displayText = '';
+    if(this.state.search){
+      displayText = 'Searching for rides from ' + this.state.search + '...'
+    }
+    if(this.state.daySelected){
+      displayText = 'Searching for rides on ' + this.state.daySelected + '...'
+    }
     return(
       <View style={{flex: 1}}>
         <ScrollView>
@@ -45,7 +51,12 @@ class DavisScene extends Component {
             label={'Where to?'}
             highlightColor={'#00BCD4'}
             dense={true}
+            autoCapitalize={'words'}
+            onSubmitEditing={(event) => this.handleSearch(event.nativeEvent.text)}
           />
+          <View>
+            <Text>{displayText}</Text>
+          </View>
         </ScrollView>
         <RaisedTextButton
           onPress={() => this.openAndroidDatePicker()}
@@ -57,7 +68,7 @@ class DavisScene extends Component {
   }
 }
 
-class HomeScene extends Component {
+class HomeScene extends PureComponent {
 
   state = {
     cities: [
@@ -95,7 +106,7 @@ class HomeScene extends Component {
   }
 }
 
-class Home extends Component{
+class Home extends PureComponent{
 
   static navigationOptions = {
       header: null
